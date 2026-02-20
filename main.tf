@@ -1,4 +1,5 @@
 // configure providers 
+
 terraform {
   required_providers {
     azurerm = {
@@ -17,7 +18,9 @@ provider "azurerm" {
     
   }
 }
+
 // Configured locals
+
 locals {
   resource_group_name = "myrg"
   location            = "centralindia"
@@ -40,11 +43,14 @@ locals {
 }
 
 //This resource block is used to create a resource group
+
 resource "azurerm_resource_group" "RG" {
   name     = local.resource_group_name
   location = local.location
 }
+
 //This resource block is used to create a virthual network
+
 resource "azurerm_virtual_network" "vnet" {
   name                = local.virtual_network.name
   location            = local.location
@@ -55,6 +61,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 //this resource block is used to create two subnets in the virthual network
+
 resource "azurerm_subnet" "subnetA" {
   name                 = local.subnets[0].name
   resource_group_name  = local.resource_group_name
@@ -71,6 +78,7 @@ resource "azurerm_subnet" "subnetB" {
 }
 
 //this resource block is used to create a nic with private ip
+
 resource "azurerm_network_interface" "nic" {
   name                = "nic1"
   location            = local.location
@@ -86,6 +94,7 @@ resource "azurerm_network_interface" "nic" {
 }
 
 //this resource block is used to create a public ip
+
 resource "azurerm_public_ip" "publicip1" {
   name                = "myfirstpublicip"
   resource_group_name = local.resource_group_name
@@ -99,6 +108,7 @@ resource "azurerm_public_ip" "publicip1" {
 }
 
 //this resource block is used to create a NSG
+
 resource "azurerm_network_security_group" "nsg" {
   name                = "mynsg"
   location            = local.location
@@ -123,6 +133,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 //this resource block is used to NSG association to subnetA
+
 resource "azurerm_subnet_network_security_group_association" "associatewithsubnetA" {
   subnet_id                 = azurerm_subnet.subnetA.id
   network_security_group_id = azurerm_network_security_group.nsg.id
@@ -130,6 +141,7 @@ resource "azurerm_subnet_network_security_group_association" "associatewithsubne
 }
 
 //this resource block is used to create a windows virtual machine
+
 resource "azurerm_windows_virtual_machine" "vm" {
   name                = "myvm1"
   resource_group_name = local.resource_group_name
@@ -157,6 +169,7 @@ resource "azurerm_windows_virtual_machine" "vm" {
 }
 
 //this resource block is used to create a data disk
+
 resource "azurerm_managed_disk" "DataDisk" {
   name                 = "Disk2"
   location             = local.location
@@ -167,6 +180,7 @@ resource "azurerm_managed_disk" "DataDisk" {
 }
 
 //this resource block is used to attach the data disk to virtual machine
+
 resource "azurerm_virtual_machine_data_disk_attachment" "attattachdatadisk" {
   managed_disk_id    = azurerm_managed_disk.DataDisk.id
   virtual_machine_id = azurerm_windows_virtual_machine.vm.id
@@ -175,6 +189,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "attattachdatadisk" {
 }
 
 //this resource block is used to create a route table and add a route to it
+
 resource "azurerm_route_table" "route" {
   name                = "routetable"
   location            = local.location
@@ -188,12 +203,14 @@ resource "azurerm_route_table" "route" {
 }
 
 //this resource block is used to associate the route table with subnetA
+
 resource "azurerm_subnet_route_table_association" "associatewithsubnetB" {
   subnet_id      = azurerm_subnet.subnetA.id
   route_table_id = azurerm_route_table.route.id
 }
 
 // This resource block is used for creating data disk snapshot
+
 resource "azurerm_snapshot" "snapshot" {
   name                = "myvm1_osdisk_snapshot"
   location            = local.location
@@ -205,6 +222,7 @@ resource "azurerm_snapshot" "snapshot" {
 // Vnet peering practicale with two vm servers
 
 // Configured locals
+
 locals {
   resource_group_name = "myrg"
   location            = "centralindia"
@@ -217,6 +235,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 // This resource block is for create virtual network1
+
 resource "azurerm_virtual_network" "vnet1" {
   name                = "vnet01"
   location            = local.location
